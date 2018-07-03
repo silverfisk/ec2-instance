@@ -60,7 +60,6 @@ Playbook example:
 #
 # This module requires that the boto python library is installed, and that Ansible can use awscli.
 # You'll also need python boto3 & botocore ("pip install boto3 --user")
-# Execute with parameters: -e "CI_ENVIRONMENT_SLUG=dev" or similar to source the correct vars/ -file
 
 - name: "provision EC2 server pets"
   hosts: localhost
