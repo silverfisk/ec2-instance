@@ -1,0 +1,9 @@
+---
+# We expect a variable
+
+- block:
+  - include_tasks: ec2_create_pets.yaml
+    when: ec2_pets is defined
+    with_items: "{{ ec2_pets }}"
+    tags:
+      - ec2_instances
