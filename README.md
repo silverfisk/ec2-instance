@@ -5,10 +5,10 @@ Ansible role to create AWS EC2 instances.
 It adds allrunning instances with a matching Name & CostCenter tag to the inventory group ec2_pets. It also registers some variables such as volume and package installation information so it's available inside the instance during the play.
 
 
-Example usage
--------------
+Variables example
+---------
 
-vars/myvars.yaml:
+```cat vars/myvars.yaml```
  ```yaml
 EnvironmentClass: "dev"
 CostCenter: "12345"
@@ -21,12 +21,12 @@ vpc_id: vpc-12345678                  # prod
 AWSRegion: eu-west-1
 
 ec2_pets:
-  group-apptier01-env:               # This will be the server name tag
+  group-apptier01-env:                # This will be the server name tag
     description: "App Tier server for {{ Application  }}"
     ssh_key: "my-ssh-key-dev"
     instance_type: t2.micro
     instance_ami: ami-e365fd9a
-    limits:                         # Add limits.conf / limits.d
+    limits:                           # Add limits.conf / limits.d
         limits_group:
           domain: "@groupname"
           limit_item: "nofile"
@@ -48,5 +48,47 @@ ec2_pets:
     vpc_subnet_id: "{{ PrivateSubnet1A }}"
     yum_packages:
       - sudo
-      - "@base"                   # Package group
+      - "@base"                       # Package group
+```
+
+Playbook example:
+-----------------
+```cat playbook.yaml```
+```yaml
+---
+# This Ansible playbook creates a number AWS instances to be used as server pets.
+#
+# This module requires that the boto python library is installed, and that Ansible can use awscli.
+# You'll also need python boto3 & botocore ("pip install boto3 --user")
+# Execute with parameters: -e "CI_ENVIRONMENT_SLUG=dev" or similar to source the correct vars/ -file
+
+- name: "provision EC2 server pets"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  pre_tasks:
+    - name: "Include global application variables"
+      include_vars: "vars/myvars.yaml"
+      tags:
+        - ec2_instances
+
+  roles:
+    - { role: ec2-groups, tags: ["ec2_groups"] }
+    - { role: ec2-instance, tags: ["ec2_instances"] }
+
+
+- name: Configure provisioned instances (dynamically added by ec2-instance role)
+  hosts: ec2_pets
+  become: yes
+  gather_facts: true
+  pre_tasks:
+    - name: "Include global application variables"
+      include_vars: "vars/myvars.yaml"
+      tags:
+        - ec2_instances
+
+  roles:
+    - { role: yum_packages, tags: ["ec2_groups"] }                                   # Installs packages in yum_packages
+    - { role: block_filesystems, tags: ["block_filesystems"], mntpoint_mode: 0755 }  # Expects volumes as defined in vars
 ```
