@@ -3,7 +3,7 @@
     ec2:
       region: "{{ AWSRegion }}"
       key_name: "{{ ec2_pets[item].ssh_key }}"
-      group: "{{ ec2_pets[item].security_groups }}"
+      group: "{{ ec2_pets[item].security_groups | default(omit) }}"
       instance_type: "{{ ec2_pets[item].instance_type }}"
       termination_protection : "{{ ec2_pets[item].termination_protection }}"
       image: "{{ ec2_pets[item].instance_ami }}"
