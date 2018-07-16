@@ -1,6 +1,7 @@
 - block:
   - name: "server {{ item }} for {{ Application }}"
     ec2_instance:
+      name: "{{ item }}"
       region: "{{ AWSRegion }}"
       key_name: "{{ ec2_pets[item].ssh_key }}"
       security_groups: "{{ ec2_pets[item].security_groups | default(omit) }}"
