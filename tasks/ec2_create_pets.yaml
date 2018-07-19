@@ -18,6 +18,7 @@
         Owner: "{{ OwnerEmail }}"
         CostCenter: "{{ CostCenter }}"
         Application: "{{ Application }}"
+        ApplicationID: "{{ ApplicationID | default(omit) }}"
         Tier: "{{ ApplicationTier }}"
         Description: "{{ ec2_pets[item].description }}"
       detailed_monitoring: "{{ ec2_pets[item].monitoring }}"
