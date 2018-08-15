@@ -9,7 +9,7 @@
       termination_protection : "{{ ec2_pets[item].termination_protection }}"
       image_id: "{{ ec2_pets[item].instance_ami }}"
       state: "{{ ec2_pets[item].state | default(omit) }}"
-      volumes: "{{ ec2_pets[item].volumes | default(omit) }}"
+      # volumes: "{{ ec2_pets[item].volumes | default(omit) }}"
       wait: "{{ ec2_pets[item].wait }}"
       wait_timeout: 500
       tags:
@@ -47,6 +47,25 @@
     loop_control:
       loop_var: hostitem
     changed_when: false
+
+  # Save fact about our instance ID (for usage in ec2_volumes.yaml)
+  - name: Create EC2 instance ID fact
+    set_fact:
+      instance_id: "{{ instanceitem.instance_id }}"
+      volumes: "{{ ec2_pets[item].volumes | default(omit) }}"
+    with_items: "{{ ec2_servers.instances }}"
+    loop_control:
+      loop_var: instanceitem
+    changed_when: false
+
+  # Create any EBS volumes
+  - include_tasks: ec2_volumes.yaml
+    when: volumes is defined
+    with_items: volumes
+    loop_control:
+      loop_var: volitem
+    tags:
+      - EBS
 
   - name: "Wait for {{ item }} to become available on port 22"
     wait_for:

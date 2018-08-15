@@ -1,0 +1,11 @@
+---
+- block:
+  - name: "create EBS device on {{ serveritem }}"
+    ec2_vol:
+      instance: "{{ instance_id }}"
+      volume_type : "{{ volitem.volume_type }}"
+      volume_size: "{{ volitem.volume_size }}"
+      encrypted: "{{ volitem.encrypt }}"
+      iops: "{{ volitem.resizefs | default(omit) }}"      # Use only if volume_type is io1
+      snapshot: "{{ volitem.resizefs | default(omit) }}"  # snapshot ID on which to base the volume
+      state: "{{ volitem.state | default(omit) }}"
