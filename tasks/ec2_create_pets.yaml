@@ -61,7 +61,7 @@
   # Create any EBS volumes
   - include_tasks: ec2_volumes.yaml
     when: volumes is defined
-    with_items: volumes
+    with_items: "{{ volumes }}"
     loop_control:
       loop_var: volitem
     tags:
