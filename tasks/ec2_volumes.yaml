@@ -1,6 +1,6 @@
 ---
 - block:
-  - name: "create EBS device on {{ serveritem }}"
+  - name: "create EBS device on {{ volitem }}"
     ec2_vol:
       instance: "{{ instance_id }}"
       volume_type : "{{ volitem.volume_type }}"
