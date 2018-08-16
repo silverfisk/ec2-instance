@@ -9,4 +9,13 @@
       encrypted: "{{ volitem.encrypt }}"
       # iops: "{{ volitem.resizefs | default('100') }}"      # Use only if volume_type is io1
       # snapshot: "{{ volitem.resizefs | default(omit) }}"  # snapshot ID on which to base the volume
+      tags:
+        Name: "{{ item }}"
+        EnvironmentClass: "{{ EnvironmentClass }}"
+        Owner: "{{ OwnerEmail }}"
+        CostCenter: "{{ CostCenter }}"
+        Application: "{{ Application }}"
+        ApplicationID: "{{ ApplicationID | default(omit) }}"
+        Tier: "{{ ApplicationTier }}"
+        Description: "{{ ec2_pets[item].description }}"
       state: "{{ volitem.state | default('present') }}"
