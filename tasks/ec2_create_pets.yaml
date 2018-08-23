@@ -21,7 +21,7 @@
         ApplicationID: "{{ ApplicationID | default(omit) }}"
         Tier: "{{ ApplicationTier }}"
         Description: "{{ ec2_pets[item].description }}"
-        snapshot-schedule: "{{ ec2_pets[item].snapshot-schedule | default(omit) }}"
+        snapshot-schedule: "{{ ec2_pets[item].snapshot_schedule | default(omit) }}"
       detailed_monitoring: "{{ ec2_pets[item].monitoring }}"
       # state: "{{ ec2_pets[item].state }}"
       vpc_subnet_id: "{{ ec2_pets[item].vpc_subnet_id }}"
