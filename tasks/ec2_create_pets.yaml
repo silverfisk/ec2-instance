@@ -37,10 +37,10 @@
     register: ec2_servers
 
   # Add servers to ec2_pets hostsgroup
-  - name: Add new instance to host group ec2_pets
+  - name: Add new instance to host group {{ ec2_pets[item].ansiblegroup | default('ec2_pets') }}
     add_host:
       hostname: "{{ hostitem.private_ip_address }}"
-      groupname: ec2_pets
+      groupname: "{{ ec2_pets[item].ansiblegroup | default('ec2_pets') }}"
       yum_packages: "{{ ec2_pets[item].yum_packages | default(omit) }}"
       volumes: "{{ ec2_pets[item].volumes | default(omit) }}"
       limits: "{{ ec2_pets[item].limits | default(omit) }}"  # set variable, or omit it if undefined
